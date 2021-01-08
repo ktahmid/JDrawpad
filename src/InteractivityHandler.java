@@ -93,9 +93,10 @@ public class InteractivityHandler {
                 }
             } else if (click.getButton() == MouseButton.SECONDARY) {
                 hintPolyline.getPoints().addAll(click.getX(), click.getY());
+                hintCanvas.getChildren().removeAll();
+                hintPolyline.setStrokeWidth(STROKE_WIDTH);
                 canvas.getChildren().add(hintPolyline);
                 hintPolyline = null;
-                System.out.println("Right-click");
             }
         });
     }
