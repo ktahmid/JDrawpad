@@ -1,12 +1,10 @@
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Point2D;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Arc;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Ellipse;
-import javafx.scene.shape.Line;
+import javafx.scene.shape.*;
 
 public class InteractivityHandler {
     private static final double STROKE_WIDTH = 2.5;
@@ -17,6 +15,7 @@ public class InteractivityHandler {
     private Line hintLine;
     private Ellipse hintEllipse;
     private Arc hintArc;
+    private Polyline hintPolyline;
 
     public void handleLineDrawing(Pane canvas, Pane hintCanvas) {
         canvas.setOnMousePressed(press -> {
@@ -80,6 +79,24 @@ public class InteractivityHandler {
             canvas.getChildren().add(circle);
             System.out.println(circle.toString());
             prevPoint = null;
+        });
+    }
+
+    public void handlePolylineDrawing(Pane canvas, Pane hintCanvas) {
+        canvas.setOnMouseClicked(click -> {
+            if (click.getButton() == MouseButton.PRIMARY) {
+                if (hintPolyline == null) {
+                    hintPolyline = new Polyline(click.getX(), click.getY());
+                    hintCanvas.getChildren().add(hintPolyline);
+                } else {
+                    hintPolyline.getPoints().addAll(click.getX(), click.getY());
+                }
+            } else if (click.getButton() == MouseButton.SECONDARY) {
+                hintPolyline.getPoints().addAll(click.getX(), click.getY());
+                canvas.getChildren().add(hintPolyline);
+                hintPolyline = null;
+                System.out.println("Right-click");
+            }
         });
     }
 
@@ -177,9 +194,9 @@ public class InteractivityHandler {
 
     public void highlightGridPoints(Pane canvasBackground, Pane hintCanvas) {
         canvasBackground.setOnMouseMoved(e -> {
-            System.out.println(e.getSceneY()+", "+e.getSceneY());
+//            System.out.println(e.getSceneY()+", "+e.getSceneY());
 //            if (e.getSceneX()%Main.GRID_X_GAP==0 && e.getSceneY()%Main.GRID_Y_GAP==0) {
-                drawPointAt(hintCanvas,e.getSceneX(),e.getSceneY(),HINT_COLOR);
+//                drawPointAt(hintCanvas,e.getSceneX(),e.getSceneY(),HINT_COLOR);
 //            }
         });
     }

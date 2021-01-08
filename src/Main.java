@@ -55,8 +55,8 @@ public class Main extends Application {
     // Drawing tools
     private static ToolButton toolbtnLine = new ToolButton("Line");
     private static ToolButton toolbtnArrow = new ToolButton("Arrow");
-    private static ToolButton toolbtnPolygon = new ToolButton("Polygon");
-    private static ToolButton toolbtnCircle = new ToolButton("Circle");
+    private static ToolButton toolbtnPolyline = new ToolButton("Polyline");
+    private static ToolButton toolbtnEllipse = new ToolButton("Ellipse");
     private static ToolButton toolbtnSemicircle = new ToolButton("Semi-circle");
     private static ToolButton toolbtnArc = new ToolButton("Arc");
 
@@ -83,8 +83,9 @@ public class Main extends Application {
 
         InteractivityHandler ih = new InteractivityHandler();
 
-        toolbtnLine.setOnAction(click -> ih.handleLineDrawing(canvas,hintCanvas));
-        toolbtnCircle.setOnAction(click -> ih.handleEllipseDrawing(canvas,hintCanvas));
+        toolbtnLine.setOnAction(click -> ih.handleLineDrawing(canvas, hintCanvas));
+        toolbtnPolyline.setOnAction(click -> ih.handlePolylineDrawing(canvas, hintCanvas));
+        toolbtnEllipse.setOnAction(click -> ih.handleEllipseDrawing(canvas,hintCanvas));
         toolbtnArc.setOnAction(click -> ih.handleArcDrawing(canvas,hintCanvas));
         toolbtnSemicircle.setOnAction(click -> ih.handleSemicircleDrawing(canvas,hintCanvas));
 
@@ -142,8 +143,8 @@ public class Main extends Application {
     private void setupToolbar() {
         toolbar.getColumnConstraints().add(new ColumnConstraints(50)); // for 1st column in the toolbar
         toolbar.getColumnConstraints().add(new ColumnConstraints(50)); // for 2nd column
-        toolbar.addColumn(0, toolbtnLine, toolbtnArrow, toolbtnPolygon);
-        toolbar.addColumn(1, toolbtnArc, toolbtnSemicircle, toolbtnCircle);
+        toolbar.addColumn(0, toolbtnLine, toolbtnArrow, toolbtnPolyline);
+        toolbar.addColumn(1, toolbtnArc, toolbtnSemicircle, toolbtnEllipse);
         Label toolsLabel = new Label("Tools");
         toolsLabel.setFont(new Font(18));
         toolbarHolder.getChildren().addAll(toolsLabel, toolbar);
