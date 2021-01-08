@@ -1,25 +1,22 @@
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import org.jfree.fx.FXGraphics2D;
 
-import java.awt.event.MouseEvent;
-import java.awt.geom.Line2D;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 public class Main extends Application {
 
@@ -27,12 +24,13 @@ public class Main extends Application {
     private static GridPane toolbar = new GridPane();    // the toolbar
     private static ToggleGroup toolbarGroup = new ToggleGroup(); // toggle group for the tools, so that at most one tool can be selected at a time
     private static VBox toolbarHolder = new VBox(5);
-    private static AnchorPane toolbarArea = new AnchorPane(toolbarHolder);
-    private static Canvas canvas;
-    private static Pane canvasHolder = new Pane();
-    private static ScrollPane canvasSection = new ScrollPane(canvasHolder);  // scrollable pane for holding the canvas
-    private static ScrollPane optionsArea = new ScrollPane();  // scrollable pane for holding the options panel
-    private static BorderPane appBody = new BorderPane(canvasSection, null, optionsArea, null, toolbarArea);  // container for everything except the menu bar
+    private static AnchorPane toolbarSection = new AnchorPane(toolbarHolder);  // left pane of the app
+    private static Pane canvas;
+    private static Pane hintCanvas = new Pane();
+    private static Pane canvasBackground = new Pane();
+    private static ScrollPane canvasSection = new ScrollPane(canvasBackground);  // middle pane of the app; scrollable
+    private static ScrollPane optionsSection = new ScrollPane();  // right pane of the app; scrollable
+    private static BorderPane appBody = new BorderPane(canvasSection, null, optionsSection, null, toolbarSection);  // container for everything except the menu bar
     private static VBox root = new VBox(menuBar, appBody);  // root node; container for everything
 
     // Menus
@@ -45,6 +43,7 @@ public class Main extends Application {
     private static MenuItem mitemOpen = new MenuItem("Open…");
     private static MenuItem mitemSave = new MenuItem("Save");
     private static MenuItem mitemSaveAs = new MenuItem("Save As…");
+    private static MenuItem mitemExport = new MenuItem("Export…");
     private static MenuItem mitemExit = new MenuItem("Exit");
 
     // Edit menu items
@@ -61,9 +60,12 @@ public class Main extends Application {
     private static ToolButton toolbtnSemicircle = new ToolButton("Semi-circle");
     private static ToolButton toolbtnArc = new ToolButton("Arc");
 
-    Point2D prevPoint;
-    Line hintLine;
-    Circle hintCircle;
+    public static final int GRID_X_GAP = 10;
+    public static final int GRID_Y_GAP = 10;
+
+    private Point2D prevPoint;
+    private Line hintLine;
+    private Circle hintCircle;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -77,113 +79,64 @@ public class Main extends Application {
         setupToolbar();
         setupOptionsArea();
 
-        canvas = new Canvas(400, 300);
+        createCanvas(600,400);
 
-        GraphicsContext gc = canvas.getGraphicsContext2D();
+        InteractivityHandler ih = new InteractivityHandler();
 
-        toolbtnLine.setSelected(true);
-        switch ((String)toolbarGroup.getSelectedToggle().getUserData()) {
-        case "Line":
-            canvas.setOnMousePressed(press -> {
-                double x = press.getX(), y = press.getY();
-                prevPoint = new Point2D(x, y);
-                gc.fillOval(x - 2.5, y - 2.5, 5, 5);
-            });
-            canvas.setOnMouseDragged(drag -> {
-                // Draw the hint line
-                double x = drag.getX(), y = drag.getY();
-                canvasHolder.getChildren().remove(hintLine);
-                DoubleProperty mouseX = new SimpleDoubleProperty(drag.getX());
-                DoubleProperty mouseY = new SimpleDoubleProperty(drag.getY());
-                hintLine = new Line(prevPoint.getX(), prevPoint.getY(), mouseX.get(), mouseY.get());
-                mouseX.addListener(ov -> hintLine.endXProperty().bind(mouseX));
-                mouseY.addListener(ov -> hintLine.endYProperty().bind(mouseY));
-                hintLine.setStroke(Color.BLUE);
-                canvasHolder.getChildren().add(hintLine);
-            });
-            canvas.setOnMouseReleased(release -> {
-                // Draw the line
-                double x = release.getX(), y = release.getY();
-                gc.strokeLine(prevPoint.getX(), prevPoint.getY(), x, y);
-                prevPoint = null;
-                canvasHolder.getChildren().remove(hintLine);
-                gc.fillOval(x - 2.5, y - 2.5, 5, 5);
-            });
-            break;
+        toolbtnLine.setOnAction(click -> ih.handleLineDrawing(canvas,hintCanvas));
+        toolbtnCircle.setOnAction(click -> ih.handleEllipseDrawing(canvas,hintCanvas));
+        toolbtnArc.setOnAction(click -> ih.handleArcDrawing(canvas,hintCanvas));
+        toolbtnSemicircle.setOnAction(click -> ih.handleSemicircleDrawing(canvas,hintCanvas));
 
-        case "Circle":
-            canvas.setOnMousePressed(click -> {
-                double x = click.getX(), y = click.getY();
-                prevPoint = new Point2D(x, y);
-                gc.fillOval(x - 2.5, y - 2.5, 5, 5);
-            });
-            canvas.setOnMouseDragged(drag -> {
-                // Draw the hint circle
-                double x = drag.getX(), y = drag.getY();
-                canvasHolder.getChildren().remove(hintCircle);
-                DoubleProperty radius = new SimpleDoubleProperty(prevPoint.distance(x, y));
-                hintCircle = new Circle(prevPoint.getX(), prevPoint.getY(), radius.get());
-                radius.addListener(ov -> hintCircle.radiusProperty().bind(radius));
-                hintCircle.setStroke(Color.BLUE);
-                hintCircle.setFill(null);
-                canvasHolder.getChildren().add(hintCircle);
-            });
-            canvas.setOnMouseReleased(release -> {
-                // Draw the circle
-                double x = release.getX(), y = release.getY();
-                double radius = prevPoint.distance(x, y);
-                gc.strokeOval(prevPoint.getX() - radius, prevPoint.getY() - radius, 2 * radius, 2 * radius);
-                prevPoint = null;
-                canvasHolder.getChildren().remove(hintCircle);
-                gc.fillOval(x - 2.5, y - 2.5, 5, 5);
-            });
-            break;
-        }
+        mitemExport.setOnAction(e -> {
+            FileChooser svgFileChooser = new FileChooser();
+            File svgFile = svgFileChooser.showSaveDialog(primaryStage);
+            if (svgFile != null) {
+                exportToSvgFile(svgFile);
+            }
+        });
 
-//        canvas.addEventHandler(MouseEvent.MOUSE_PRESSED,
-//                new EventHandler<MouseEvent>() {
-//                    @Override
-//                    public void handle(MouseEvent event) {
-//                        gc.beginPath();
-//                        gc.moveTo(event.getX(), event.getY());
-//                        gc.stroke();
-//                    }
-//                });
-//
-//        canvas.addEventHandler(MouseEvent.MOUSE_DRAGGED,
-//                new EventHandler<MouseEvent>() {
-//                    @Override
-//                    public void handle(MouseEvent event) {
-//                        gc.restore();
-//                        gc.lineTo(event.getX(), event.getY());
-////                        gc.rect(event.getX(), event.getY(), event.getX()+10, event.getY()+10);
-//                        gc.stroke();
-//                    }
-//                });
-//
-//        canvas.addEventHandler(MouseEvent.MOUSE_RELEASED,
-//                new EventHandler<MouseEvent>() {
-//                    @Override
-//                    public void handle(MouseEvent event) {
-//
-//                    }
-//                });
-
-        canvasHolder.setStyle(
-                "-fx-background-color: #FFFFFF;"
-        );
-        canvasHolder.getChildren().add(canvas);
+        mitemSaveAs.setOnAction(e -> {
+            FileChooser fileChooser = new FileChooser();
+            File outFile = fileChooser.showSaveDialog(primaryStage);
+            if (outFile != null) {
+                saveToFile(outFile);
+            }
+        });
         primaryStage.setScene(new Scene(root, 1000, 500));
         primaryStage.show();
     }
 
+    private void saveToFile(File outFile) {
+        try (PrintWriter fileWriter = new PrintWriter(outFile)) {
+            String fileContent = produceContentString(canvas);
+            fileWriter.print(fileContent);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private String produceContentString(Pane canvas) {
+        return "";
+    }
+
+    private void exportToSvgFile(File svgFile) {
+        try (PrintWriter svgWriter = new PrintWriter(svgFile)) {
+            String svgCode = produceSvg(canvas);
+            svgWriter.print(svgCode);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private String produceSvg(Pane canvas) {
+        return "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xml:space=\"preserve\">\n" +
+                "</svg>\n";
+    }
+
     private void setupOptionsArea() {
-        optionsArea.setTooltip(new Tooltip("Options"));
-        optionsArea.prefHeightProperty().bind(
-                appBody.heightProperty()
-        );
-
-
+        optionsSection.setTooltip(new Tooltip("Options"));
+        optionsSection.prefHeightProperty().bind(appBody.heightProperty());
     }
 
     private void setupToolbar() {
@@ -205,15 +158,13 @@ public class Main extends Application {
                 mitemOpen,
                 mitemSave,
                 mitemSaveAs,
+                mitemExport,
                 mitemExit
         );
         mitemNew.setOnAction(e -> showNewFileDialog());
         mitemExit.setOnAction(e -> Platform.exit());
-        menuBar.getMenus().addAll(
-                menuFile,
-                menuEdit,
-                menuHelp
-        );
+
+        menuBar.getMenus().addAll(menuFile, menuEdit, menuHelp);
     }
 
     private void showNewFileDialog() {
@@ -258,25 +209,52 @@ public class Main extends Application {
     }
 
     public void createCanvas(int width, int height) {
-        canvas = new Canvas(width, height);
+        hintCanvas.setPrefSize(width, height);
+        hintCanvas.setBorder(new Border(new BorderStroke(Color.BLUE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+        canvasBackground.setPrefSize(width, height);
+        canvasBackground.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+        canvas = new Pane();
+        canvas.setPrefSize(width, height);
 
-        // JavaFX dimensions are in points, and 1 cm = 28.3465 pt
-//        canvas.setPrefWidth(width * 28.3465);
-//        canvas.setPrefHeight(height * 28.3465);
+        // Make the canvas background white
+        canvasBackground.setStyle("-fx-background-color: #FFFFFF;");
+        drawGridMarks(width, height);
 
-        // Make the canvas white
-        canvas.setStyle(
-                "-fx-background-color: #FFFFFF;"
+        canvasBackground.getChildren().add(hintCanvas);
+        hintCanvas.getChildren().add(canvas);
+
+        // The canvasBackground has to be manually centered within the scrollable
+        // canvasSection, else the canvasBackground (and hence the canvas itself)
+        // appears at the top-left corner of the scrollable canvasSection.
+        canvasBackground.translateXProperty().bind(
+                canvasSection.widthProperty()
+                        .subtract(canvasBackground.widthProperty())
+                        .divide(2)
+        );
+        canvasBackground.translateYProperty().bind(
+                canvasSection.heightProperty()
+                        .subtract(canvasBackground.heightProperty())
+                        .divide(2)
         );
 
-        // Since canvasHolder is a StackPane, the canvas will automatically be centered within it.
-        canvasHolder.getChildren().add(canvas);
+        InteractivityHandler ih = new InteractivityHandler();
+        ih.highlightGridPoints(canvasBackground,hintCanvas);
+    }
 
-        // But canvasHolder has to be manually centered within the scrollable canvasSection,
-        // else the canvasHolder (and hence the canvas itself) appears at the top-left corner of
-        // the scrollable canvasSection.
-//        canvasHolder.prefWidthProperty().bind(canvasSection.widthProperty());
-//        canvasHolder.prefHeightProperty().bind(canvasSection.heightProperty());
+    private void drawGridMarks(int width, int height) {
+        addGridLine(0,height/2, width,height/2, 1, Color.GRAY); // x-axis
+        addGridLine(width/2,0, width/2,height, 1, Color.GRAY); // y-axis
+        for (int y = 0; y < height; y += GRID_X_GAP)
+            addGridLine(0, y, width, y, 0.5, Color.LIGHTGRAY);  // horizontal marks
+        for (int x = 0; x < width; x += GRID_Y_GAP)
+            addGridLine(x, 0, x, height, 0.5, Color.LIGHTGRAY); // vertical marks
+    }
+
+    private void addGridLine(double x1, double y1, double x2, double y2, double thickness, Color color) {
+        Line gridLine = new Line(x1, y1, x2, y2);
+        gridLine.setStrokeWidth(thickness);
+        gridLine.setStroke(color);
+        canvasBackground.getChildren().add(gridLine);
     }
 
     private static class ToolButton extends ToggleButton {
