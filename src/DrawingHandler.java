@@ -60,6 +60,12 @@ public class DrawingHandler {
         canvas.setOnMouseClicked(e->{});
     }
 
+    public void handleArrowDrawing(Pane canvas) {
+        var arrow = new Arrow(canvas);
+        canvas.setOnMouseClicked(arrow);
+        canvas.setOnMouseMoved(arrow);
+    }
+
     public void handlePolylineDrawing(Pane canvas, Pane hintCanvas) {
         canvas.setOnMouseClicked(click -> {
             // If left-click...
