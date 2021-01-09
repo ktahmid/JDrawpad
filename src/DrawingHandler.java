@@ -7,40 +7,57 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 
 public class DrawingHandler {
-    private static DrawingHelper d = new DrawingHelper();
 
     private Point2D prevPoint;
-    private Point2D hintDot;
+    private DrawingHelper.Dot hintDot1;
+    private DrawingHelper.Dot hintDot2;
     private Line hintLine;
     private Ellipse hintEllipse;
     private Arc hintArc;
     private Polyline hintPolyline;
     private static final Color HINT_COLOR = Color.LIGHTBLUE;
+    private static final double HINT_STROKE_WIDTH = 1.5;
+
+    private DrawingHelper d = new DrawingHelper();
+
 
     public void handleLineDrawing(Pane canvas, Pane hintCanvas) {
         canvas.setOnMousePressed(press -> {
             double x = press.getX(), y = press.getY();
             prevPoint = new Point2D(x, y);
+            hintDot1 = new DrawingHelper.Dot(x, y, HINT_COLOR);
+            hintCanvas.getChildren().add(hintDot1);
         });
         canvas.setOnMouseDragged(drag -> {
+            DoubleProperty cursorX = new SimpleDoubleProperty(drag.getX());
+            DoubleProperty cursorY = new SimpleDoubleProperty(drag.getY());
+
             // Draw the hint line
             hintCanvas.getChildren().remove(hintLine);
-            DoubleProperty mouseX = new SimpleDoubleProperty(drag.getX());
-            DoubleProperty mouseY = new SimpleDoubleProperty(drag.getY());
-            hintLine = new Line(prevPoint.getX(), prevPoint.getY(), mouseX.get(), mouseY.get());
-            mouseX.addListener(ov -> hintLine.endXProperty().bind(mouseX));
-            mouseY.addListener(ov -> hintLine.endYProperty().bind(mouseY));
+            hintLine = new Line(prevPoint.getX(), prevPoint.getY(), cursorX.get(), cursorY.get());
             hintLine.setStroke(HINT_COLOR);
             hintCanvas.getChildren().add(hintLine);
+
+            // Draw the 2nd hint point
+            hintCanvas.getChildren().remove(hintDot2);
+            hintDot2 = new DrawingHelper.Dot(cursorX.get(), cursorY.get(), HINT_COLOR);
+            hintCanvas.getChildren().add(hintDot2);
+
+            // Bind them to the cursor's coordinates
+            cursorX.addListener(ov -> { hintLine.endXProperty().bind(cursorX); hintDot2.centerXProperty().bind(cursorX); });
+            cursorY.addListener(ov -> { hintLine.endYProperty().bind(cursorY); hintDot2.centerYProperty().bind(cursorY); });
         });
         canvas.setOnMouseReleased(release -> {
+            // Clear the hintCanvas
+            hintCanvas.getChildren().clear();
+
             // Draw the line
             d.drawLine(canvas,
                     prevPoint.getX(), prevPoint.getY(), release.getX(), release.getY()
             );
             prevPoint = null;
-            hintCanvas.getChildren().remove(hintLine);
         });
+        canvas.setOnMouseClicked(e->{});
     }
 
     public void handlePolylineDrawing(Pane canvas, Pane hintCanvas) {
@@ -53,19 +70,29 @@ public class DrawingHandler {
                     hintPolyline.getPoints().addAll(click.getX(), click.getY());
                 }
             } else if (click.getButton() == MouseButton.SECONDARY) {
+                // Draw the Polyline
                 hintPolyline.getPoints().addAll(click.getX(), click.getY());
-                hintCanvas.getChildren().removeAll();
                 d.drawPolyline(canvas, hintPolyline);
+
+                // Reset the hintPolyline
                 hintPolyline = null;
+
+                // Clear the hintCanvas
+                hintCanvas.getChildren().removeAll();
+                hintCanvas.getChildren().clear();
             }
         });
+        canvas.setOnMousePressed(e->{});
+        canvas.setOnMouseDragged(e->{});
+        canvas.setOnMouseReleased(e->{});
     }
 
     public void handleArcDrawing(Pane canvas, Pane hintCanvas) {
         canvas.setOnMousePressed(click -> {
             double x = click.getX(), y = click.getY();
             prevPoint = new Point2D(x, y);
-            d.drawPoint(hintCanvas, x, y, HINT_COLOR);
+            hintDot1 = new DrawingHelper.Dot(x, y, HINT_COLOR);
+            hintCanvas.getChildren().add(hintDot1);
         });
         canvas.setOnMouseDragged(drag -> {
             // Draw the hint arc
@@ -90,6 +117,10 @@ public class DrawingHandler {
             hintCanvas.getChildren().add(hintArc);
         });
         canvas.setOnMouseReleased(release -> {
+            // Clear the hintCanvas
+            hintCanvas.getChildren().removeAll();
+            hintCanvas.getChildren().clear();
+
             // Draw the arc
             double x = release.getX(), y = release.getY();
             double radiusX = Math.abs(x - prevPoint.getX());
@@ -99,25 +130,27 @@ public class DrawingHandler {
                             ? ((x >= prevPoint.getX()) ? 180 : 270)
                             : ((x >= prevPoint.getX()) ?  90 :   0);
 
-            d.drawPoint(hintCanvas, x, y, HINT_COLOR);
-            hintCanvas.getChildren().removeAll();
+            hintDot1 = new DrawingHelper.Dot(x, y, HINT_COLOR);
+            hintCanvas.getChildren().add(hintDot1);
             d.drawArc(canvas, x, prevPoint.getY(), radiusX, radiusY, startAngle);
             prevPoint = null;
         });
+        canvas.setOnMouseClicked(e->{});
     }
 
     public void handleEllipseDrawing(Pane canvas, Pane hintCanvas) {
         canvas.setOnMousePressed(click -> {
             double x = click.getX(), y = click.getY();
             prevPoint = new Point2D(x, y);
-            d.drawPoint(hintCanvas, x, y, HINT_COLOR);
+            hintDot1 = new DrawingHelper.Dot(x, y, HINT_COLOR);
+            hintCanvas.getChildren().add(hintDot1);
         });
         canvas.setOnMouseDragged(drag -> {
             // Draw the hint ellipse
             DoubleProperty radiusX = new SimpleDoubleProperty(Math.abs(drag.getX()-prevPoint.getX()));
             DoubleProperty radiusY = new SimpleDoubleProperty(Math.abs(drag.getY()-prevPoint.getY()));
 
-            hintCanvas.getChildren().remove(hintEllipse);
+            hintCanvas.getChildren().removeAll();
             hintEllipse = new Ellipse(prevPoint.getX(), prevPoint.getY(), radiusX.get(), radiusY.get());
             radiusX.addListener(ov -> hintEllipse.radiusXProperty().bind(radiusX));
             radiusY.addListener(ov -> hintEllipse.radiusYProperty().bind(radiusY));
@@ -129,6 +162,7 @@ public class DrawingHandler {
         canvas.setOnMouseReleased(release -> {
             // Clear the hintCanvas
             hintCanvas.getChildren().removeAll();
+            hintCanvas.getChildren().clear();
 
             // Draw the ellipse
             double radiusX = Math.abs(release.getX()-prevPoint.getX());
@@ -136,5 +170,6 @@ public class DrawingHandler {
             d.drawEllipse(canvas, prevPoint.getX(),prevPoint.getY(), radiusX,radiusY);
             prevPoint = null;
         });
+        canvas.setOnMouseClicked(e->{});
     }
 }

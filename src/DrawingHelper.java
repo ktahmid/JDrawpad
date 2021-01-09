@@ -6,10 +6,19 @@ public class DrawingHelper {
     private static final double STROKE_WIDTH = 2.5;
     private static final double DOT_RADIUS = 2.5;
 
+    private History hist = Main.hist;
+
+    public static class Dot extends Circle {
+        public double x, y;
+        Dot(double x, double y, Color col) { super(x, y, DOT_RADIUS, col); setStroke(null);}
+    }
+
     public void drawLine(Pane canvas, double x1,double y1, double x2,double y2) {
         Line line = new Line(x1,y1, x2,y2);
         line.setStrokeWidth(STROKE_WIDTH);
         canvas.getChildren().add(line);
+        hist.update(canvas);
+        Main.canvas = hist.current();
         System.out.println(line.toString());
     }
 
@@ -34,11 +43,11 @@ public class DrawingHelper {
         System.out.println(ellipse.toString());
     }
 
-    public void drawPoint(Pane pane, double x, double y, Color color) {
+    public void drawDot(Pane pane, double x, double y, Color color) {
         pane.getChildren().add(new Circle(x, y, DOT_RADIUS, color));
     }
 
-    public void drawPoint(Pane pane, double x, double y, Color color, double raidus) {
+    public void drawDot(Pane pane, double x, double y, Color color, double raidus) {
         pane.getChildren().add(new Circle(x, y, raidus, color));
     }
 }

@@ -1,13 +1,11 @@
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
-import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
@@ -15,57 +13,51 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
 
 public class Main extends Application {
 
-    private static MenuBar menuBar = new MenuBar();     // the menu bar
-    private static GridPane toolbar = new GridPane();    // the toolbar
-    private static ToggleGroup toolbarGroup = new ToggleGroup(); // toggle group for the tools, so that at most one tool can be selected at a time
-    private static VBox toolbarHolder = new VBox(5);
-    private static AnchorPane toolbarSection = new AnchorPane(toolbarHolder);  // left pane of the app
-    private static Pane canvas;
-    private static Pane hintCanvas = new Pane();
-    private static Pane canvasBackground = new Pane();
-    private static ScrollPane canvasSection = new ScrollPane(canvasBackground);  // middle pane of the app; scrollable
-    private static ScrollPane optionsSection = new ScrollPane();  // right pane of the app; scrollable
-    private static BorderPane appBody = new BorderPane(canvasSection, null, optionsSection, null, toolbarSection);  // container for everything except the menu bar
-    private static VBox root = new VBox(menuBar, appBody);  // root node; container for everything
+    // UI components
+    private MenuBar menuBar = new MenuBar();     // the menu bar
+    private GridPane toolbar = new GridPane();    // the toolbar
+    private ToggleGroup toolbarGroup = new ToggleGroup(); // toggle group for the tools, so that at most one tool can be selected at a time
+    private VBox toolbarHolder = new VBox(5);
+    private AnchorPane toolbarSection = new AnchorPane(toolbarHolder);  // left pane of the app
+    public static Pane canvas;
+    private Pane hintCanvas = new Pane();
+    private Pane canvasBackground = new Pane();
+    private ScrollPane canvasSection = new ScrollPane(canvasBackground);  // middle pane of the app; scrollable
+    private ScrollPane optionsSection = new ScrollPane();  // right pane of the app; scrollable
+    private BorderPane appBody = new BorderPane(canvasSection, null, optionsSection, null, toolbarSection);  // container for everything except the menu bar
+    private VBox root = new VBox(menuBar, appBody);  // root node; container for everything
 
     // Menus
-    private static Menu menuFile = new Menu("File");
-    private static Menu menuEdit = new Menu("Edit");
-    private static Menu menuHelp = new Menu("Help");
-
+    private Menu menuFile = new Menu("File");
+    private Menu menuEdit = new Menu("Edit");
+    private Menu menuHelp = new Menu("Help");
     // File menu items
-    private static MenuItem mitemNew = new MenuItem("New…");
-    private static MenuItem mitemOpen = new MenuItem("Open…");
-    private static MenuItem mitemSave = new MenuItem("Save");
-    private static MenuItem mitemSaveAs = new MenuItem("Save As…");
-    private static MenuItem mitemExport = new MenuItem("Export…");
-    private static MenuItem mitemExit = new MenuItem("Exit");
-
+    private MenuItem mitemNew = new MenuItem("New…");
+    private MenuItem mitemOpen = new MenuItem("Open…");
+    private MenuItem mitemSave = new MenuItem("Save");
+    private MenuItem mitemSaveAs = new MenuItem("Save As…");
+    private MenuItem mitemExport = new MenuItem("Export…");
+    private MenuItem mitemExit = new MenuItem("Exit");
     // Edit menu items
-    // TODO
-
+    private MenuItem mitemUndo = new MenuItem("Undo");
+    private MenuItem mitemRedo = new MenuItem("Redo");
     // Help menu items
-    // TODO
+    private MenuItem mitemAbout = new MenuItem("About");
 
     // Drawing tools
-    private static ToolButton toolbtnLine = new ToolButton("Line");
-//    private static ToolButton toolbtnArrow = new ToolButton("Arrow");
-    private static ToolButton toolbtnPolyline = new ToolButton("Polyline");
-    private static ToolButton toolbtnArc = new ToolButton("Arc");
-//    private static ToolButton toolbtnSemicircle = new ToolButton("Semi-circle");
-    private static ToolButton toolbtnEllipse = new ToolButton("Ellipse");
+    private ToolButton toolbtnLine = new ToolButton("Line");
+    private ToolButton toolbtnPolyline = new ToolButton("Polyline");
+    private ToolButton toolbtnArc = new ToolButton("Arc");
+    private ToolButton toolbtnEllipse = new ToolButton("Ellipse");
 
     public static final int GRID_X_GAP = 10;
     public static final int GRID_Y_GAP = 10;
 
-    private Point2D prevPoint;
-    private Line hintLine;
-    private Circle hintCircle;
+    // History
+    public static History hist;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -75,11 +67,13 @@ public class Main extends Application {
                 root.heightProperty().subtract(menuBar.heightProperty())
         );
 
-        setupMenus();
+        // TEMPORARY: For testing. In the final app, user will have to go through the menu
+        createCanvas(600,400);
+        hist = new History(canvas);
+
+        setupMenus(primaryStage);
         setupToolbar();
         setupOptionsArea();
-
-        createCanvas(600,400);
 
         DrawingHandler dh = new DrawingHandler();
 
@@ -88,21 +82,6 @@ public class Main extends Application {
         toolbtnArc.setOnAction(click -> dh.handleArcDrawing(canvas,hintCanvas));
         toolbtnEllipse.setOnAction(click -> dh.handleEllipseDrawing(canvas,hintCanvas));
 
-        mitemExport.setOnAction(e -> {
-            FileChooser svgFileChooser = new FileChooser();
-            File svgFile = svgFileChooser.showSaveDialog(primaryStage);
-            if (svgFile != null) {
-                FileUtil.exportToSvgFile(svgFile, canvas);
-            }
-        });
-
-        mitemSaveAs.setOnAction(e -> {
-            FileChooser fileChooser = new FileChooser();
-            File outFile = fileChooser.showSaveDialog(primaryStage);
-            if (outFile != null) {
-                FileUtil.saveToFile(outFile, canvas);
-            }
-        });
         primaryStage.setScene(new Scene(root, 1000, 500));
         primaryStage.show();
     }
@@ -125,7 +104,7 @@ public class Main extends Application {
         AnchorPane.setRightAnchor(toolbarHolder, 20.0);
     }
 
-    private void setupMenus() {
+    private void setupMenus(Stage primaryStage) {
         menuFile.getItems().addAll(
                 mitemNew,
                 mitemOpen,
@@ -134,8 +113,33 @@ public class Main extends Application {
                 mitemExport,
                 mitemExit
         );
+        menuEdit.getItems().addAll(mitemUndo, mitemRedo);
+
         mitemNew.setOnAction(e -> showNewFileDialog());
         mitemExit.setOnAction(e -> Platform.exit());
+        mitemExport.setOnAction(e -> {
+            FileChooser svgFileChooser = new FileChooser();
+            File svgFile = svgFileChooser.showSaveDialog(primaryStage);
+            if (svgFile != null) {
+                FileUtil.exportToSvgFile(svgFile, canvas);
+            }
+        });
+        mitemSaveAs.setOnAction(e -> {
+            FileChooser fileChooser = new FileChooser();
+            File outFile = fileChooser.showSaveDialog(primaryStage);
+            if (outFile != null) {
+                FileUtil.saveToFile(outFile, canvas);
+            }
+        });
+
+        if (hist.canUndo()) mitemUndo.setOnAction(e -> {
+            hist.undo();
+            canvas = hist.current();
+        });
+        if (hist.canRedo()) mitemRedo.setOnAction(e -> {
+            hist.redo();
+            canvas = hist.current();
+        });
 
         menuBar.getMenus().addAll(menuFile, menuEdit, menuHelp);
     }
@@ -189,12 +193,14 @@ public class Main extends Application {
         canvas = new Pane();
         canvas.setPrefSize(width, height);
 
+        canvasBackground.getChildren().clear();
+        hintCanvas.getChildren().clear();
+        canvasBackground.getChildren().add(hintCanvas);
+        canvasBackground.getChildren().add(canvas);
+
         // Make the canvas background white
         canvasBackground.setStyle("-fx-background-color: #FFFFFF;");
         drawGridMarks(width, height);
-
-        canvasBackground.getChildren().add(hintCanvas);
-        hintCanvas.getChildren().add(canvas);
 
         // The canvasBackground has to be manually centered within the scrollable
         // canvasSection, else the canvasBackground (and hence the canvas itself)
@@ -211,7 +217,13 @@ public class Main extends Application {
         );
 
         UIHandler uih = new UIHandler();
-        uih.highlightGridPoints(canvasBackground,hintCanvas);
+//        uih.highlightGridPoints(canvasBackground, hintCanvas);
+//        canvasBackground.setOnMouseMoved(e -> {
+//            if (e.getX()%Main.GRID_X_GAP==0 && e.getY()%Main.GRID_Y_GAP==0) {
+//                System.out.println(e.getY()+", "+e.getY()); // for diagnotics
+//                (new DrawingHelper()).drawDot(hintCanvas,e.getX(),e.getY(),Color.GRAY);
+//            }
+//        });
     }
 
     private void drawGridMarks(int width, int height) {
@@ -230,7 +242,7 @@ public class Main extends Application {
         canvasBackground.getChildren().add(gridLine);
     }
 
-    private static class ToolButton extends ToggleButton {
+    private class ToolButton extends ToggleButton {
         ToolButton(String name) {
             super(name);
             this.setPrefWidth(50);
