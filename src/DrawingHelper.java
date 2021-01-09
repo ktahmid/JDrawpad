@@ -6,7 +6,6 @@ public class DrawingHelper {
     private static final double STROKE_WIDTH = 2.5;
     private static final double DOT_RADIUS = 2.5;
 
-    private History hist = Main.hist;
 
     public static class Dot extends Circle {
         public double x, y;
@@ -17,8 +16,7 @@ public class DrawingHelper {
         Line line = new Line(x1,y1, x2,y2);
         line.setStrokeWidth(STROKE_WIDTH);
         canvas.getChildren().add(line);
-        hist.update(canvas);
-        Main.canvas = hist.current();
+        Main.hist.update(Main.canvas);
         System.out.println(line.toString());
     }
 

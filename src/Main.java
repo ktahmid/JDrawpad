@@ -44,6 +44,7 @@ public class Main extends Application {
     // Edit menu items
     private MenuItem mitemUndo = new MenuItem("Undo");
     private MenuItem mitemRedo = new MenuItem("Redo");
+    private MenuItem mitemClear = new MenuItem("Clear");
     // Help menu items
     private MenuItem mitemAbout = new MenuItem("About");
 
@@ -113,7 +114,7 @@ public class Main extends Application {
                 mitemExport,
                 mitemExit
         );
-        menuEdit.getItems().addAll(mitemUndo, mitemRedo);
+        menuEdit.getItems().addAll(mitemUndo, mitemRedo, mitemClear);
 
         mitemNew.setOnAction(e -> showNewFileDialog());
         mitemExit.setOnAction(e -> Platform.exit());
@@ -133,6 +134,7 @@ public class Main extends Application {
         });
 
         if (hist.canUndo()) mitemUndo.setOnAction(e -> {
+            System.out.println("Undo clicked");
             hist.undo();
             canvas = hist.current();
         });
@@ -140,6 +142,7 @@ public class Main extends Application {
             hist.redo();
             canvas = hist.current();
         });
+        mitemClear.setOnAction(e -> canvas.getChildren().clear());
 
         menuBar.getMenus().addAll(menuFile, menuEdit, menuHelp);
     }
@@ -149,7 +152,7 @@ public class Main extends Application {
         newFileDialog.setTitle("Create a new file");
         newFileDialog.setResizable(false);
 
-        Label instruction = new Label("Enter the dimensions of the canvas in centimeters.");
+        Label instruction = new Label("Enter the dimensions of the canvas in pixels.");
         HBox topPane = new HBox(instruction);
 
         Label widthLabel = new Label("Width: ");

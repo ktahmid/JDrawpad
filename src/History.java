@@ -19,10 +19,12 @@ public class History {
     public void update(Pane snapshot) {
         paneSnapshots.add(snapshot);
         currentIndex++;
+        System.out.println("UPDATED"); // diagnostics
     }
 
     public void undo() {
         currentIndex--;
+        System.out.println("Undo CALLED"); // diagnostics
     }
 
     public void redo() {
@@ -30,10 +32,10 @@ public class History {
     }
 
     public boolean canUndo() {
-        return currentIndex > 0;
+        return (currentIndex > 0);
     }
 
     public boolean canRedo() {
-        return currentIndex < paneSnapshots.size()-1;
+        return (currentIndex < paneSnapshots.size()-1);
     }
 }

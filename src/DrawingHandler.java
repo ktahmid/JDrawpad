@@ -16,7 +16,7 @@ public class DrawingHandler {
     private Arc hintArc;
     private Polyline hintPolyline;
     private static final Color HINT_COLOR = Color.BLUE;
-    private static final double HINT_THICKNESS = 1.5;
+    private static final double HINT_THICKNESS = 1;
 
     private DrawingHelper d = new DrawingHelper();
 
