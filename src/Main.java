@@ -186,20 +186,22 @@ public class Main extends Application {
     }
 
     public void createCanvas(int width, int height) {
-        hintCanvas.setPrefSize(width, height);
-        hintCanvas.setBorder(new Border(new BorderStroke(Color.BLUE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
-        canvasBackground.setPrefSize(width, height);
-        canvasBackground.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
         canvas = new Pane();
         canvas.setPrefSize(width, height);
+        hintCanvas.setPrefSize(width, height);
+        canvasBackground.setPrefSize(width, height);
 
+        // Clear everything and add canvas and hintCanvas to canvasBackground
         canvasBackground.getChildren().clear();
         hintCanvas.getChildren().clear();
         canvasBackground.getChildren().add(hintCanvas);
         canvasBackground.getChildren().add(canvas);
 
-        // Make the canvas background white
+        // Make the canvas background white with a gray border
         canvasBackground.setStyle("-fx-background-color: #FFFFFF;");
+        canvasBackground.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+
+        // Draw the grid lines/marks
         drawGridMarks(width, height);
 
         // The canvasBackground has to be manually centered within the scrollable

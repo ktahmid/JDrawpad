@@ -24,7 +24,7 @@ public class DrawingHelper {
 
     public void drawPolyline(Pane canvas, Polyline polyline) {
         Polyline newPolyline = polyline;
-        newPolyline.setStrokeWidth(STROKE_WIDTH);
+        newPolyline.setStroke(Color.BLACK); newPolyline.setStrokeWidth(STROKE_WIDTH);
         canvas.getChildren().add(newPolyline);
         System.out.println(newPolyline.toString());
     }
