@@ -15,6 +15,7 @@ public class ShapeStringParser {
                 line.setStrokeWidth(2.5);
                 line.setStroke(Color.BLACK);
                 line.setFill(null);
+                return line;
             case "polyline":
                 Polyline polyline = new Polyline(
                 );
@@ -38,6 +39,7 @@ public class ShapeStringParser {
                 arc.setStrokeWidth(2.5);
                 arc.setStroke(Color.BLACK);
                 arc.setFill(null);
+                return arc;
             case "ellipse":
                 Ellipse ellipse = new Ellipse(
                         translateX(tokens[1], w),
@@ -48,8 +50,9 @@ public class ShapeStringParser {
                 ellipse.setStrokeWidth(2.5);
                 ellipse.setStroke(Color.BLACK);
                 ellipse.setFill(null);
+                return ellipse;
             default:
-                return new Shape() {};
+                return null;
         }
     }
 
