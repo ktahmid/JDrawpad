@@ -24,12 +24,12 @@ public class CsvGenerator {
     }
 
     public static String getStr(Polyline polyline, int w, int h) {
-        StringBuilder str = new StringBuilder("polyline");
+        String str = "polyline";
         for (int i = 0; i < polyline.getPoints().size(); i += 2) {
-            str.append(",").append(translateX(polyline.getPoints().get(i), w));
-            str.append(",").append(translateX(polyline.getPoints().get(i + 1), h));
+            str += "," + translateX(polyline.getPoints().get(i), w);
+            str += "," + translateX(polyline.getPoints().get(i + 1), h);
         }
-        return str.toString();
+        return str;
     }
 
     public static String getStr(Arc arc, int w, int h) {

@@ -1,3 +1,4 @@
+import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Shape;
 
@@ -5,11 +6,6 @@ import java.io.*;
 import java.util.ArrayList;
 
 public class FileUtils {
-
-    private String getSvgCode() {
-        return "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xml:space=\"preserve\">\n" +
-                "</svg>\n";
-    }
 
     public static void saveToFile(File outFile, Pane canvas) {
         try (PrintWriter fileWriter = new PrintWriter(outFile)) {
@@ -42,8 +38,12 @@ public class FileUtils {
     }
 
     public static String produceSvg(Pane canvas) {
-        return "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xml:space=\"preserve\">\n" +
-                "</svg>\n";
+        String svgCode = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xml:space=\"preserve\">\n";
+        for (Node node : canvas.getChildren()) {
+            svgCode += "  " + SvgGenerator.convert((Shape) node);
+        }
+        svgCode += "</svg>\n";
+        return svgCode;
     }
 
     public static void readFileToCanvas(File csvFile, Pane canvas) {
