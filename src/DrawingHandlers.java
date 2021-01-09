@@ -6,7 +6,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 
-public class DrawingHandler {
+public class DrawingHandlers {
 
     private Point2D prevPoint;
     private DrawingHelper.Dot hintDot1;

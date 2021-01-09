@@ -17,6 +17,10 @@ Helper classes:
   - `Arrow`
 - `History`
 
+Classes defining implementing event handler methods:
+- `UIHandlers`
+- `DrawingHandlers`
+
 Utility classes:
 - `CsvGenerator`
 - `SvgGenerator`

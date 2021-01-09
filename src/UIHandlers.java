@@ -1,7 +1,7 @@
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
-public class UIHandler {
+public class UIHandlers {
 
     private Color HINT_COLOR = Color.GRAY;
 
