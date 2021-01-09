@@ -35,5 +35,4 @@ public class ShapeSvgGenerator {
                 " stroke-width=\"" + ellipse.getStrokeWidth() + "px\"" +
                 " stroke=\"black\" fill=\"none\" />\n";
     }
-
 }

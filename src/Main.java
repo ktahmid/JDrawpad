@@ -54,11 +54,11 @@ public class Main extends Application {
 
     // Drawing tools
     private static ToolButton toolbtnLine = new ToolButton("Line");
-    private static ToolButton toolbtnArrow = new ToolButton("Arrow");
+//    private static ToolButton toolbtnArrow = new ToolButton("Arrow");
     private static ToolButton toolbtnPolyline = new ToolButton("Polyline");
-    private static ToolButton toolbtnEllipse = new ToolButton("Ellipse");
-    private static ToolButton toolbtnSemicircle = new ToolButton("Semi-circle");
     private static ToolButton toolbtnArc = new ToolButton("Arc");
+//    private static ToolButton toolbtnSemicircle = new ToolButton("Semi-circle");
+    private static ToolButton toolbtnEllipse = new ToolButton("Ellipse");
 
     public static final int GRID_X_GAP = 10;
     public static final int GRID_Y_GAP = 10;
@@ -81,19 +81,18 @@ public class Main extends Application {
 
         createCanvas(600,400);
 
-        InteractivityHandler ih = new InteractivityHandler();
+        DrawingHandler dh = new DrawingHandler();
 
-        toolbtnLine.setOnAction(click -> ih.handleLineDrawing(canvas, hintCanvas));
-        toolbtnPolyline.setOnAction(click -> ih.handlePolylineDrawing(canvas, hintCanvas));
-        toolbtnEllipse.setOnAction(click -> ih.handleEllipseDrawing(canvas,hintCanvas));
-        toolbtnArc.setOnAction(click -> ih.handleArcDrawing(canvas,hintCanvas));
-        toolbtnSemicircle.setOnAction(click -> ih.handleSemicircleDrawing(canvas,hintCanvas));
+        toolbtnLine.setOnAction(click -> dh.handleLineDrawing(canvas, hintCanvas));
+        toolbtnPolyline.setOnAction(click -> dh.handlePolylineDrawing(canvas, hintCanvas));
+        toolbtnArc.setOnAction(click -> dh.handleArcDrawing(canvas,hintCanvas));
+        toolbtnEllipse.setOnAction(click -> dh.handleEllipseDrawing(canvas,hintCanvas));
 
         mitemExport.setOnAction(e -> {
             FileChooser svgFileChooser = new FileChooser();
             File svgFile = svgFileChooser.showSaveDialog(primaryStage);
             if (svgFile != null) {
-                exportToSvgFile(svgFile);
+                FileUtil.exportToSvgFile(svgFile, canvas);
             }
         });
 
@@ -101,38 +100,11 @@ public class Main extends Application {
             FileChooser fileChooser = new FileChooser();
             File outFile = fileChooser.showSaveDialog(primaryStage);
             if (outFile != null) {
-                saveToFile(outFile);
+                FileUtil.saveToFile(outFile, canvas);
             }
         });
         primaryStage.setScene(new Scene(root, 1000, 500));
         primaryStage.show();
-    }
-
-    private void saveToFile(File outFile) {
-        try (PrintWriter fileWriter = new PrintWriter(outFile)) {
-            String fileContent = produceContentString(canvas);
-            fileWriter.print(fileContent);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    private String produceContentString(Pane canvas) {
-        return "";
-    }
-
-    private void exportToSvgFile(File svgFile) {
-        try (PrintWriter svgWriter = new PrintWriter(svgFile)) {
-            String svgCode = produceSvg(canvas);
-            svgWriter.print(svgCode);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    private String produceSvg(Pane canvas) {
-        return "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xml:space=\"preserve\">\n" +
-                "</svg>\n";
     }
 
     private void setupOptionsArea() {
@@ -143,8 +115,8 @@ public class Main extends Application {
     private void setupToolbar() {
         toolbar.getColumnConstraints().add(new ColumnConstraints(50)); // for 1st column in the toolbar
         toolbar.getColumnConstraints().add(new ColumnConstraints(50)); // for 2nd column
-        toolbar.addColumn(0, toolbtnLine, toolbtnArrow, toolbtnPolyline);
-        toolbar.addColumn(1, toolbtnArc, toolbtnSemicircle, toolbtnEllipse);
+        toolbar.addColumn(0, toolbtnLine, toolbtnPolyline);
+        toolbar.addColumn(1, toolbtnArc, toolbtnEllipse);
         Label toolsLabel = new Label("Tools");
         toolsLabel.setFont(new Font(18));
         toolbarHolder.getChildren().addAll(toolsLabel, toolbar);
@@ -238,8 +210,8 @@ public class Main extends Application {
                         .divide(2)
         );
 
-        InteractivityHandler ih = new InteractivityHandler();
-        ih.highlightGridPoints(canvasBackground,hintCanvas);
+        UIHandler uih = new UIHandler();
+        uih.highlightGridPoints(canvasBackground,hintCanvas);
     }
 
     private void drawGridMarks(int width, int height) {
