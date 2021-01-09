@@ -1,7 +1,7 @@
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 
-public class ShapeStringParser {
+public class CsvParser {
 
     public static Shape getShape(String[] tokens, int w, int h) {
         switch (tokens[0]) {

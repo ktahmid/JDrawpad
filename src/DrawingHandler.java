@@ -61,7 +61,7 @@ public class DrawingHandler {
     }
 
     public void handleArrowDrawing(Pane canvas) {
-        var arrow = new Arrow(canvas);
+        DrawingHelper.Arrow arrow = new DrawingHelper.Arrow(canvas);
         canvas.setOnMouseClicked(arrow);
         canvas.setOnMouseMoved(arrow);
     }

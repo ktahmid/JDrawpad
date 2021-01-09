@@ -23,7 +23,7 @@ public class FileUtils {
     public static String produceCsv(Pane canvas) {
         StringBuilder csvBuilder = new StringBuilder();
         for (int i = 0; i < canvas.getChildren().size(); i++) {
-            csvBuilder.append(ShapeStringGenerator.getStr(
+            csvBuilder.append(CsvGenerator.getStr(
                     (Shape) canvas.getChildren().get(i),
                     (int) canvas.getPrefWidth(),
                     (int) canvas.getPrefHeight()
@@ -49,7 +49,7 @@ public class FileUtils {
     public static void readFileToCanvas(File csvFile, Pane canvas) {
         for (String[] shapeStr : readCsv(csvFile)) {
             canvas.getChildren().add(
-                    ShapeStringParser.getShape(
+                    CsvParser.getShape(
                             shapeStr,
                             (int) canvas.getPrefWidth(),
                             (int) canvas.getPrefHeight())

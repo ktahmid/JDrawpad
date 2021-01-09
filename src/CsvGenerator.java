@@ -1,6 +1,6 @@
 import javafx.scene.shape.*;
 
-public class ShapeStringGenerator {
+public class CsvGenerator {
 
     public static String getStr(Shape shape, int w, int h) {
         if (shape instanceof Line)
