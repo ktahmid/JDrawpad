@@ -1,9 +1,8 @@
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Shape;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
+import java.util.ArrayList;
 
 public class FileUtils {
 
@@ -47,7 +46,27 @@ public class FileUtils {
                 "</svg>\n";
     }
 
-    public static void readFile(File outFile, Pane canvas) {
+    public static void readFileToCanvas(File csvFile, Pane canvas) {
+        for (String[] shapeStr : readCsv(csvFile)) {
+            canvas.getChildren().add(
+                    ShapeStringParser.getShape(
+                            shapeStr,
+                            (int) canvas.getPrefWidth(),
+                            (int) canvas.getPrefHeight())
+            );
+        }
+    }
 
+    private static ArrayList<String[]> readCsv(File inFile) {
+        ArrayList<String[]> splitLines = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(inFile))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                splitLines.add(line.split(","));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return splitLines;
     }
 }
