@@ -1,5 +1,7 @@
 # JDrawpad
 
+![logo screenshot](logo-screenshot.png)
+
 **JDrawpad** is an application for designing vector graphics.
 
 It lets the user interactively draw simple vector shapes on a rectangular canvas using a pointing device.
@@ -53,7 +55,7 @@ The `ToggleGroup` for our toolbar buttons is the field `toolbarGroup`.
 
 #### `History`
 
-Declared as: `public class History` {}
+Declared as: `public class History { ... }`
 
 ![diagram of History](History.png)
 
