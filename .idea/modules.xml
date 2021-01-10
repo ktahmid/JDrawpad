@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/NamelessDrawingApp.iml" filepath="$PROJECT_DIR$/NamelessDrawingApp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/JDrawpad.iml" filepath="$PROJECT_DIR$/JDrawpad.iml" />
     </modules>
   </component>
 </project>

@@ -1,6 +1,6 @@
-# [AppName]
+# JDrawpad
 
-[AppName] is an application for designing vector graphics.
+**JDrawpad** is an application for designing vector graphics.
 
 It lets the user interactively draw simple vector shapes on a rectangular canvas using a pointing device.
 It provides facilities for saving an artwork and opening an existing artwork as well as saving an artwork to a universal graphic file format (Scalable Vector Graphic or SVG).
@@ -36,12 +36,13 @@ Utility classes:
 
 #### `Main`
 
-`class Main extends javafx.application.Application`
+Declared as: `class Main extends javafx.application.Application { ... }`
 
 Every JavaFX program must have a class that extends `javafx.application.Application` and overrides its `start(Stage primaryStage)` method.
 `primaryStage` represents the primary window in the application.
 When a JavaFX application starts up, it creates a root `Stage` (GUI window) object which is passed to the `start(Stage primaryStage)` method of the root class (that extends `Application`) in the JavaFX application.
 In our program, `Main` serves the purpose of the root class.
+We are also using it to perform the primary UI-related operations.
 
 ##### Inner classes
 
@@ -54,11 +55,11 @@ The `ToggleGroup` for our toolbar buttons is the field `toolbarGroup`.
 `public class History`
 
 The `History` class represents the timeline of the canvas.
-[AppName] uses a `History` for its undo-redo functionality.
+JDrawpad uses a `History` for its undo-redo functionality.
 
 #### `DrawingHelper`
 
-This class defines functions that perform the actual drawing commands as well as related (inner) classes.
+This class defines functions that perform the actual drawing commands as well as the related (inner) classes.
 
 #### `UIHandlers`
 
