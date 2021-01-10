@@ -19,7 +19,6 @@ Helper classes:
 - `History`
 
 Classes defining event handler methods:
-- `UIHandlers`
 - `DrawingHandlers`
 
 Utility classes:
@@ -28,15 +27,17 @@ Utility classes:
 - `CsvParser`
 - `FileUtils`
 
-### Relationship between the classes
+Relationship between the top-level classes:
 
-[class relationship image]
+![relationship between the classes](class-relationships.png)
 
 ### Descriptions of the classes
 
 #### `Main`
 
 Declared as: `class Main extends javafx.application.Application { ... }`
+
+![diagram of Main](Main.png)
 
 Every JavaFX program must have a class that extends `javafx.application.Application` and overrides its `start(Stage primaryStage)` method.
 `primaryStage` represents the primary window in the application.
@@ -52,17 +53,25 @@ The `ToggleGroup` for our toolbar buttons is the field `toolbarGroup`.
 
 #### `History`
 
-`public class History`
+Declared as: `public class History` {}
+
+![diagram of History](History.png)
 
 The `History` class represents the timeline of the canvas.
 JDrawpad uses a `History` for its undo-redo functionality.
 
 #### `DrawingHelper`
 
+Declared as: `public class DrawingHelper { ... }`
+
+![diagram of DrawingHelper](DrawingHelper.png)
+
 This class defines functions that perform the actual drawing commands as well as the related (inner) classes.
 
-#### `UIHandlers`
-
 #### `DrawingHandlers`
+
+Declared as: `public class DrawingHandlers { ... }`
+
+![diagram of DrawingHandlers](DrawingHandlers.png)
 
 This class defines the event-handler objects that are triggered when user interacts with the canvas using a pointing device while a tool is selected.
