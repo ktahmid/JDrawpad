@@ -27,7 +27,7 @@ public class FileUtils {
         }
         return csvContent;
     }
-
+        
     public static void exportToSvgFile(File svgFile, Pane canvas) {
         try (PrintWriter svgWriter = new PrintWriter(svgFile)) {
             String svgCode = produceSvg(canvas);
