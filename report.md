@@ -8,6 +8,7 @@ It provides facilities for saving an artwork and opening an existing artwork as 
 ## Structure
 
 ### Classes
+
 The main JavaFX application class:
 - `Main`
 
@@ -27,4 +28,14 @@ Utility classes:
 - `CsvParser`
 - `FileUtils`
 
-## 
+### Relationship between the classes
+
+[class relationship image]
+
+### Descriptions of the classes
+
+#### `Main`
+
+`class Main extends javafx.application.Application`
+
+
