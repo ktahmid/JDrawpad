@@ -17,15 +17,15 @@ public class FileUtils {
     }
 
     public static String produceCsv(Pane canvas) {
-        StringBuilder csvBuilder = new StringBuilder();
+        String csvContent = "";
         for (int i = 0; i < canvas.getChildren().size(); i++) {
-            csvBuilder.append(CsvGenerator.getStr(
+            csvContent += CsvGenerator.getStr(
                     (Shape) canvas.getChildren().get(i),
                     (int) canvas.getPrefWidth(),
                     (int) canvas.getPrefHeight()
-            )).append("\n");
+            ) + "\n";
         }
-        return csvBuilder.toString();
+        return csvContent;
     }
 
     public static void exportToSvgFile(File svgFile, Pane canvas) {

@@ -77,3 +77,28 @@ Declared as: `public class DrawingHandlers { ... }`
 ![diagram of DrawingHandlers](DrawingHandlers.png)
 
 This class defines the event-handler objects that are triggered when user interacts with the canvas using a pointing device while a tool is selected.
+
+#### `CsvGenerator`
+
+Declared as: `public class CsvGenerator { ... }`
+
+![diagram of CsvGenerator](CsvGenerator.png)
+
+#### `SvgGenerator`
+
+Declared as: `public class SvgGenerator { ... }`
+
+![diagram of SvgGenerator](SvgGenerator.png)
+
+#### `CsvParser`
+
+Declared as: `public class CsvParser { ... }`
+
+![diagram of CsvParser](CsvParser.png)
+
+#### `FileUtils`
+
+Declared as: `public class FileUtils { ... }`
+
+![diagram of FileUtils](FileUtils.png)
+
