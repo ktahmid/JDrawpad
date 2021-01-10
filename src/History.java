@@ -19,12 +19,10 @@ public class History {
     public void update(Pane snapshot) {
         paneSnapshots.add(snapshot);
         currentIndex++;
-        System.out.println("UPDATED"); // diagnostics
     }
 
     public void undo() {
         currentIndex--;
-        System.out.println("Undo CALLED"); // diagnostics
     }
 
     public void redo() {
