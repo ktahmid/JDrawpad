@@ -18,7 +18,7 @@ Helper classes:
   - `Arrow`
 - `History`
 
-Classes defining implementing event handler methods:
+Classes defining event handler methods:
 - `UIHandlers`
 - `DrawingHandlers`
 
@@ -56,6 +56,12 @@ The `ToggleGroup` for our toolbar buttons is the field `toolbarGroup`.
 The `History` class represents the timeline of the canvas.
 [AppName] uses a `History` for its undo-redo functionality.
 
+#### `DrawingHelper`
+
+This class defines functions that perform the actual drawing commands as well as related (inner) classes.
+
 #### `UIHandlers`
 
 #### `DrawingHandlers`
+
+This class defines the event-handler objects that are triggered when user interacts with the canvas using a pointing device while a tool is selected.
