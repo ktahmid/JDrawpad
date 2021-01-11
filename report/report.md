@@ -1,6 +1,6 @@
 # JDrawpad
 
-![logo screenshot](logo-screenshot.png)
+![logo screenshot](screenshot-with-logo.png)
 
 **JDrawpad** is an application for designing vector graphics.
 
@@ -12,22 +12,20 @@ It provides facilities for saving an artwork and opening an existing artwork, as
 ### Classes
 
 The main JavaFX application class:
-- `Main`
+- `Main` (extends `javafx.application.Application`)
 
 Helper classes:
-- `DrawingHelper`
-  - `Dot`
-  - `Arrow`
-- `History`
-
-Classes defining event handler methods:
-- `DrawingHandlers`
-
-Utility classes:
-- `CsvGenerator`
-- `SvgGenerator`
-- `CsvParser`
-- `FileUtils`
+- *Classes for helper objects*
+  - `DrawingHelper`
+  - `History`
+- *Classes defining event handlers*
+  - `UIHandlers`
+  - `DrawingHandlers`
+- *Classes defining utility functions*
+  - `FileUtils`
+  - `CsvGenerator`
+  - `CsvParser`
+  - `SvgGenerator`
 
 Relationship between the top-level classes:
 
@@ -35,9 +33,7 @@ Relationship between the top-level classes:
 
 ### Descriptions of the classes
 
-#### `Main`
-
-Declared as: `class Main extends javafx.application.Application { ... }`
+#### Class: `Main`
 
 ![diagram of Main](Main.png)
 
@@ -53,52 +49,38 @@ We are also using it to perform the primary UI-related operations.
 It’s a subclass of JavaFX’s `ToggleButton`, so that if it’s included in a `ToggleGroup`, only one of the buttons in that `ToggleGroup` can be selected at a time at most.
 The `ToggleGroup` for our toolbar buttons is the field `toolbarGroup`.
 
-#### `History`
-
-Declared as: `public class History { ... }`
+#### Class: `History`
 
 ![diagram of History](History.png)
 
 The `History` class represents the timeline of the canvas.
 JDrawpad uses a `History` for its undo-redo functionality.
 
-#### `DrawingHelper`
-
-Declared as: `public class DrawingHelper { ... }`
+#### Class: `DrawingHelper`
 
 ![diagram of DrawingHelper](DrawingHelper.png)
 
 This class defines functions that perform the actual drawing commands as well as the related (inner) classes.
 
-#### `DrawingHandlers`
-
-Declared as: `public class DrawingHandlers { ... }`
+#### Class: `DrawingHandlers`
 
 ![diagram of DrawingHandlers](DrawingHandlers.png)
 
 This class defines the event-handler objects that are triggered when user interacts with the canvas using a pointing device while a tool is selected.
 
-#### `CsvGenerator`
-
-Declared as: `public class CsvGenerator { ... }`
+#### Class: `CsvGenerator`
 
 ![diagram of CsvGenerator](CsvGenerator.png)
 
-#### `SvgGenerator`
-
-Declared as: `public class SvgGenerator { ... }`
+#### Class: `SvgGenerator`
 
 ![diagram of SvgGenerator](SvgGenerator.png)
 
-#### `CsvParser`
-
-Declared as: `public class CsvParser { ... }`
+#### Class: `CsvParser`
 
 ![diagram of CsvParser](CsvParser.png)
 
-#### `FileUtils`
-
-Declared as: `public class FileUtils { ... }`
+#### Class: `FileUtils`
 
 ![diagram of FileUtils](FileUtils.png)
 

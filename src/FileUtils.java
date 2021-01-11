@@ -27,7 +27,7 @@ public class FileUtils {
         }
         return csvContent;
     }
-        
+
     public static void exportToSvgFile(File svgFile, Pane canvas) {
         try (PrintWriter svgWriter = new PrintWriter(svgFile)) {
             String svgCode = produceSvg(canvas);
@@ -47,19 +47,19 @@ public class FileUtils {
     }
 
     public static void readFileToCanvas(File csvFile, Pane canvas) {
-        for (String[] shapeStr : readCsv(csvFile)) {
+        for (String[] shapeTokens : readCsv(csvFile)) {
             canvas.getChildren().add(
                     CsvParser.getShape(
-                            shapeStr,
+                            shapeTokens,
                             (int) canvas.getPrefWidth(),
                             (int) canvas.getPrefHeight())
             );
         }
     }
 
-    private static ArrayList<String[]> readCsv(File inFile) {
+    private static ArrayList<String[]> readCsv(File csvFile) {
         ArrayList<String[]> splitLines = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(inFile))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(csvFile))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 splitLines.add(line.split(","));
