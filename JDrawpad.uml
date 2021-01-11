@@ -7,7 +7,7 @@
     <node x="509.0" y="0.0">DrawingHelper</node>
     <node x="179.0" y="104.0">FileUtils</node>
     <node x="0.0" y="0.0">CsvGenerator</node>
-    <node x="678.875" y="104.0">History</node>
+    <node x="678.875" y="104.0">CanvasHistory</node>
     <node x="330.0" y="0.0">SvgGenerator</node>
     <node x="179.0" y="0.0">CsvParser</node>
     <node x="568.625" y="208.0">Main</node>
@@ -36,7 +36,7 @@
       <point x="244.5" y="188.0" />
       <point x="0.0" y="27.0" />
     </edge>
-    <edge source="Main" target="History">
+    <edge source="Main" target="CanvasHistory">
       <point x="34.0" y="-27.0" />
       <point x="645.125" y="188.0" />
       <point x="735.375" y="188.0" />

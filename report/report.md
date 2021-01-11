@@ -17,7 +17,7 @@ The main JavaFX application class:
 Helper classes:
 - *Classes for helper objects*
   - `DrawingHelper`
-  - `History`
+  - `CanvasHistory`
 - *Classes defining event handlers*
   - `UIHandlers`
   - `DrawingHandlers`
@@ -49,12 +49,12 @@ We are also using it to perform the primary UI-related operations.
 It’s a subclass of JavaFX’s `ToggleButton`, so that if it’s included in a `ToggleGroup`, only one of the buttons in that `ToggleGroup` can be selected at a time at most.
 The `ToggleGroup` for our toolbar buttons is the field `toolbarGroup`.
 
-#### Class: `History`
+#### Class: `CanvasHistory`
 
-![diagram of History](History.png)
+![diagram of CanvasHistory](History.png)
 
-The `History` class represents the timeline of the canvas.
-JDrawpad uses a `History` for its undo-redo functionality.
+The `CanvasHistory` class represents the timeline of the canvas.
+JDrawpad uses a `CanvasHistory` for its undo-redo functionality.
 
 #### Class: `DrawingHelper`
 
