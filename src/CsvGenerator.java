@@ -36,8 +36,8 @@ public class CsvGenerator {
         return "arc," +
                 translateX(arc.getCenterX(), w) + "," +
                 translateY(arc.getCenterY(), h) + "," +
-                translateX(arc.getRadiusX(), w) + "," +
-                translateY(arc.getRadiusY(), h) + "," +
+                arc.getRadiusX() + "," +
+                arc.getRadiusY() + "," +
                 arc.getStartAngle();
     }
 
@@ -45,8 +45,8 @@ public class CsvGenerator {
         return "ellipse," +
                 translateX(ellipse.getCenterX(), w) + "," +
                 translateY(ellipse.getCenterY(), h) + "," +
-                translateX(ellipse.getRadiusX(), w) + "," +
-                translateY(ellipse.getRadiusY(), h);
+                ellipse.getRadiusX() + "," +
+                ellipse.getRadiusY();
     }
 
     private static double translateX(double x, int width) {

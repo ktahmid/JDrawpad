@@ -31,8 +31,8 @@ public class CsvParser {
                 Arc arc = new Arc(
                         translateX(tokens[1], w),
                         translateY(tokens[2], h),
-                        translateX(tokens[3], w),
-                        translateY(tokens[4], h),
+                        Double.parseDouble(tokens[3]),
+                        Double.parseDouble(tokens[4]),
                         Double.parseDouble(tokens[5]),
                         90
                 );
@@ -44,8 +44,8 @@ public class CsvParser {
                 Ellipse ellipse = new Ellipse(
                         translateX(tokens[1], w),
                         translateY(tokens[2], h),
-                        translateX(tokens[3], w),
-                        translateY(tokens[4], h)
+                        Double.parseDouble(tokens[3]),
+                        Double.parseDouble(tokens[4])
                 );
                 ellipse.setStrokeWidth(2.5);
                 ellipse.setStroke(Color.BLACK);
