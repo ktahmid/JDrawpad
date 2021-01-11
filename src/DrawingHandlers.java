@@ -17,6 +17,7 @@ public class DrawingHandlers {
     private Polyline hintPolyline;
     private static final Color HINT_COLOR = Color.BLUE;
     private static final double HINT_THICKNESS = 1;
+    Line arr_1,arr_2;
 
     private DrawingHelper d = new DrawingHelper();
 
@@ -32,7 +33,7 @@ public class DrawingHandlers {
             DoubleProperty cursorX = new SimpleDoubleProperty(drag.getX());
             DoubleProperty cursorY = new SimpleDoubleProperty(drag.getY());
 
-            // Draw the hint line
+            // Draw/update the hint line
             hintCanvas.getChildren().remove(hintLine);
             hintLine = new Line(prevPoint.getX(), prevPoint.getY(), cursorX.get(), cursorY.get());
             hintLine.setStroke(HINT_COLOR); hintLine.setStrokeWidth(HINT_THICKNESS);
@@ -60,10 +61,80 @@ public class DrawingHandlers {
         canvas.setOnMouseClicked(e->{});
     }
 
-    public void handleArrowDrawing(Pane canvas) {
-        DrawingHelper.Arrow arrow = new DrawingHelper.Arrow(canvas);
-        canvas.setOnMouseClicked(arrow);
-        canvas.setOnMouseMoved(arrow);
+    public void handleArrowDrawing(Pane canvas,Pane hintCanvas) {
+
+        canvas.setOnMousePressed(press -> {
+            double x = press.getX(), y = press.getY();
+            //x1=x;y1=y;
+            prevPoint = new Point2D(x, y);
+            hintDot1 = new DrawingHelper.Dot(x, y, HINT_COLOR);
+            hintCanvas.getChildren().add(hintDot1);
+        });
+        canvas.setOnMouseDragged(drag -> {
+            DoubleProperty cursorX = new SimpleDoubleProperty(drag.getX());
+            DoubleProperty cursorY = new SimpleDoubleProperty(drag.getY());
+
+            // Draw the hint line
+            hintCanvas.getChildren().remove(hintLine);
+            hintLine = new Line(prevPoint.getX(), prevPoint.getY(), cursorX.get(), cursorY.get());
+            hintLine.setStroke(HINT_COLOR); hintLine.setStrokeWidth(HINT_THICKNESS);
+            hintCanvas.getChildren().add(hintLine);
+            //...........................................
+
+            //...........................................
+            // Draw the 2nd hint point
+            hintCanvas.getChildren().remove(hintDot2);
+            hintDot2 = new DrawingHelper.Dot(cursorX.get(), cursorY.get(), HINT_COLOR);
+            hintCanvas.getChildren().add(hintDot2);
+
+            // Bind them to the cursor's coordinates
+            cursorX.addListener(ov -> { hintLine.endXProperty().bind(cursorX); hintDot2.centerXProperty().bind(cursorX);});
+            cursorY.addListener(ov -> { hintLine.endYProperty().bind(cursorY); hintDot2.centerYProperty().bind(cursorY);});
+        });
+
+        canvas.setOnMouseReleased(release -> {
+            // Clear the hintCanvas
+            hintCanvas.getChildren().clear();
+
+            // x2=release.getX();
+            //y2=release.getY();
+            // Draw the line
+            d.drawLine(canvas,
+                    prevPoint.getX(), prevPoint.getY(), release.getX(), release.getY()
+            );
+            update(canvas,prevPoint.getX(),prevPoint.getY(),release.getX(),release.getY());
+            prevPoint = null;
+        });
+        canvas.setOnMouseClicked(e->{});
+    }
+    public void update(Pane canvas, double x1, double y1,double x2,double y2){
+        double in_arrangle = Math.toRadians(35);// more degree more angles towards the main line
+        double arrlen = 10;
+        arr_1 = new Line(x2, y2, x2, y2);
+        arr_2 = new Line(x2, y2, x2, y2);
+        double dx = x2 - x1;
+        double dy = y2 - y1;
+
+        double slope = Math.atan2(dy, dx);// find the slope
+        double x, y;
+        double f_arrangle = slope + in_arrangle;
+        x = x2 - arrlen * Math.cos(f_arrangle);// end co-ordinates
+        y = y2 - arrlen * Math.sin(f_arrangle);
+        arr_1.setStartX(x2);
+        arr_1.setStartY(y2);
+        arr_1.setEndX(x);
+        arr_1.setEndY(y);
+        double a2_f_arrangle = slope - in_arrangle;// 180 conversion for the other arrow head
+        x = x2 - arrlen * Math.cos(a2_f_arrangle);
+        y = y2 - arrlen * Math.sin(a2_f_arrangle);
+        arr_2.setStartX(x2);
+        arr_2.setStartY(y2);
+        arr_2.setEndX(x);
+        arr_2.setEndY(y);
+        arr_1.setStrokeWidth(2.5);
+        arr_2.setStrokeWidth(2.5);
+        canvas.getChildren().addAll(arr_1,arr_2);
+
     }
 
     public void handlePolylineDrawing(Pane canvas, Pane hintCanvas) {
@@ -118,7 +189,7 @@ public class DrawingHandlers {
                             : ((x >= prevPoint.getX()) ?  90 :   0)
             );
 
-            // Draw the hint arc
+            // Draw/update the hint arc
             hintCanvas.getChildren().remove(hintArc);
             hintArc = new Arc(cursorX.get(), prevPoint.getY(), radiusX.get(), radiusY.get(), startAngle.get(), 90);
             hintArc.setStroke(HINT_COLOR); hintArc.setStrokeWidth(HINT_THICKNESS); hintArc.setFill(null);
@@ -167,7 +238,7 @@ public class DrawingHandlers {
             DoubleProperty radiusX = new SimpleDoubleProperty(Math.abs(drag.getX()-prevPoint.getX()));
             DoubleProperty radiusY = new SimpleDoubleProperty(Math.abs(drag.getY()-prevPoint.getY()));
 
-            // Draw the hint ellipse
+            // Draw/update the hint ellipse
             hintCanvas.getChildren().remove(hintEllipse);
             hintEllipse = new Ellipse(prevPoint.getX(), prevPoint.getY(), radiusX.get(), radiusY.get());
             hintEllipse.setStroke(HINT_COLOR); hintEllipse.setStrokeWidth(HINT_THICKNESS); hintEllipse.setFill(null);
