@@ -36,13 +36,15 @@ public class SvgGenerator {
 
     public static String convert(Arc arc) {
         double mY = arc.getCenterY();
-        double aX = arc.getCenterX();
-        double aY = mY + (arc.getStartAngle() <= 90 ? -arc.getRadiusY() : arc.getRadiusY());
-        double mX = aX + (arc.getStartAngle()==90 || arc.getStartAngle()==180 ? -arc.getRadiusX() : arc.getRadiusX());
+        double endX = arc.getCenterX();
+        double endY = mY + (arc.getStartAngle() <= 90 ? -arc.getRadiusY() : arc.getRadiusY());
+        double mX = endX + (arc.getStartAngle()==90 || arc.getStartAngle()==180 ? -arc.getRadiusX() : arc.getRadiusX());
         return "<path d=\"" +
                 "M " + mX + "," + mY +
                 " A " + arc.getRadiusX() + "," + arc.getRadiusY() +
-                " 0 0 1 " + aX + "," + aY +
+                " 0 0" +
+                " " + (arc.getStartAngle()==0 || arc.getStartAngle()==180 ? 0 : 1) +
+                endX + "," + endY +
                 "\" stroke-width=\"" + arc.getStrokeWidth() + "px\"" +
                 " stroke=\"black\" fill=\"none\" />\n";
     }
