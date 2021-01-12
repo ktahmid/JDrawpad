@@ -6,7 +6,7 @@ See [this report](report/report.md) for the program’s technical details.
 
 ### How to run it
 
-Download the [latest release](/ktahmid/JDrawpad/releases/latest/download/package.zip) of the executable JAR and run the following command line:
+Download the [latest release](/ktahmid/JDrawpad/releases/latest) of the executable JAR and run the following command line:
 ```
 java --module-path <PATH_TO_FX> --add-modules javafx.base,javafx.controls,javafx.graphics -jar path/to/JDrawpad.jar
 ```
