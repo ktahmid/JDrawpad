@@ -51,7 +51,7 @@ The `ToggleGroup` for our toolbar buttons is the field `toolbarGroup`.
 
 #### Class: `CanvasHistory`
 
-![diagram of CanvasHistory](History.png)
+![diagram of CanvasHistory](CanvasHistory.png)
 
 The `CanvasHistory` class represents the timeline of the canvas.
 JDrawpad uses a `CanvasHistory` for its undo-redo functionality.
