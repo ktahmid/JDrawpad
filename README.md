@@ -1,12 +1,20 @@
 # JDrawpad
 
-**JDrawpad** is an application for designing vector graphics.
+JDrawpad is an application for drawing vector graphics.
 
-See this [report](report/report.md) for more information.
+See [this report](report/report.md) for the program’s technical details.
 
-## Who and why
+### How to run it
 
-This is the group project of group #7 in the course CSE215, section 19, at North South University.
+Download the [latest release](/ktahmid/JDrawpad/releases/latest/download/package.zip) of the executable JAR and run the following command line:
+```
+java --module-path <PATH_TO_FX> --add-modules javafx.base,javafx.controls,javafx.graphics -jar path/to/JDrawpad.jar
+```
+where `<PATH_TO_FX>` is the location of your installation of JavaFX `lib`s.
+
+### Who and why
+
+This program is the group project of group #7 in the Fall 2020 session of the course CSE215, section 19, at North South University.
 
 **Group members**
 
