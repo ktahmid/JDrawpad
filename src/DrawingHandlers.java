@@ -29,7 +29,7 @@ public class DrawingHandlers {
         this.hintCanvas = hintCanvas;
     }
 
-    public void handleLineDrawing() {
+    public void handleLineDrawing(Pane canvas, Pane hintCanvas) {
         canvas.setOnMousePressed(press -> {
             double x = press.getX(), y = press.getY();
             prevPoint = new Point2D(x, y);
@@ -60,7 +60,7 @@ public class DrawingHandlers {
             hintCanvas.getChildren().clear();
 
             // Draw the line
-            d.drawLine(
+            d.drawLine(canvas,
                     prevPoint.getX(), prevPoint.getY(), release.getX(), release.getY()
             );
             prevPoint = null;
@@ -68,7 +68,7 @@ public class DrawingHandlers {
         canvas.setOnMouseClicked(e->{});
     }
 
-    public void handleArrowDrawing() {
+    public void handleArrowDrawing(Pane canvas, Pane hintCanvas) {
 
         canvas.setOnMousePressed(press -> {
             double x = press.getX(), y = press.getY();
@@ -106,7 +106,7 @@ public class DrawingHandlers {
             // x2=release.getX();
             //y2=release.getY();
             // Draw the line
-            d.drawLine(
+            d.drawLine(canvas,
                     prevPoint.getX(), prevPoint.getY(), release.getX(), release.getY()
             );
             update(prevPoint.getX(),prevPoint.getY(),release.getX(),release.getY());
@@ -145,7 +145,7 @@ public class DrawingHandlers {
 
     }
 
-    public void handlePolylineDrawing() {
+    public void handlePolylineDrawing(Pane canvas, Pane hintCanvas) {
         canvas.setOnMouseClicked(click -> {
             // If left-click...
             if (click.getButton() == MouseButton.PRIMARY) {
@@ -163,7 +163,7 @@ public class DrawingHandlers {
             else if (click.getButton() == MouseButton.SECONDARY) {
                 // Draw the Polyline
                 hintPolyline.getPoints().addAll(click.getX(), click.getY());
-                d.drawPolyline(hintPolyline);
+                d.drawPolyline(canvas, hintPolyline);
 
                 // Reset hintPolyline
                 hintPolyline = null;
@@ -178,7 +178,7 @@ public class DrawingHandlers {
         canvas.setOnMouseReleased(e->{});
     }
 
-    public void handleArcDrawing() {
+    public void handleArcDrawing(Pane canvas, Pane hintCanvas) {
         canvas.setOnMousePressed(click -> {
             double x = click.getX(), y = click.getY();
             prevPoint = new Point2D(x, y);
@@ -227,13 +227,13 @@ public class DrawingHandlers {
                     (y >= prevPoint.getY())
                             ? ((x >= prevPoint.getX()) ? 180 : 270)
                             : ((x >= prevPoint.getX()) ?  90 :   0);
-            d.drawArc(x, prevPoint.getY(), radiusX, radiusY, startAngle);
+            d.drawArc(canvas, x, prevPoint.getY(), radiusX, radiusY, startAngle);
             prevPoint = null;
         });
         canvas.setOnMouseClicked(e->{});
     }
 
-    public void handleEllipseDrawing() {
+    public void handleEllipseDrawing(Pane canvas, Pane hintCanvas) {
         canvas.setOnMousePressed(click -> {
             double x = click.getX(), y = click.getY();
             prevPoint = new Point2D(x, y);
@@ -263,7 +263,7 @@ public class DrawingHandlers {
             // Draw the ellipse
             double radiusX = Math.abs(release.getX()-prevPoint.getX());
             double radiusY = Math.abs(release.getY()-prevPoint.getY());
-            d.drawEllipse(prevPoint.getX(),prevPoint.getY(), radiusX,radiusY);
+            d.drawEllipse(canvas, prevPoint.getX(),prevPoint.getY(), radiusX,radiusY);
             prevPoint = null;
         });
         canvas.setOnMouseClicked(e->{});
