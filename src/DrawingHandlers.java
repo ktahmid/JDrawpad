@@ -109,13 +109,13 @@ public class DrawingHandlers {
             d.drawLine(canvas,
                     prevPoint.getX(), prevPoint.getY(), release.getX(), release.getY()
             );
-            update(prevPoint.getX(),prevPoint.getY(),release.getX(),release.getY());
+            update(canvas,prevPoint.getX(),prevPoint.getY(),release.getX(),release.getY());
             prevPoint = null;
         });
         canvas.setOnMouseClicked(e->{});
     }
 
-    public void update(double x1, double y1,double x2,double y2){
+    public void update(Pane canvas,double x1, double y1,double x2,double y2){
         double in_arrangle = Math.toRadians(35);// more degree more angles towards the main line
         double arrlen = 10;
         arr_1 = new Line(x2, y2, x2, y2);
