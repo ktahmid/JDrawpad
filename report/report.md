@@ -96,3 +96,7 @@ This class defines the utility methods for reading and writing files.
 
 The `CanvasHistory` class represents the timeline of the canvas.
 JDrawpad uses a `CanvasHistory` for its undo-redo functionality.
+
+### How the classes work together
+
+![How the classes work together](class-relationships-with-members.png)
