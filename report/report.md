@@ -43,18 +43,16 @@ When a JavaFX application starts up, it creates a root `Stage` (GUI window) obje
 In our program, `Main` serves the purpose of the root class.
 We are also using it to perform the primary UI-related operations.
 
-##### Inner classes
-
-`ToolButton`: Represents a tool button.
+Inner class: `ToolButton`.
+Represents a tool button.
 It’s a subclass of JavaFX’s `ToggleButton`, so that if it’s included in a `ToggleGroup`, only one of the buttons in that `ToggleGroup` can be selected at a time at most.
 The `ToggleGroup` for our toolbar buttons is the field `toolbarGroup`.
 
-#### Class: `CanvasHistory`
+#### Class: `UIHandlers`
 
-![diagram of CanvasHistory](CanvasHistory.png)
+![diagram of UIHandlers](DrawingHandlers.png)
 
-The `CanvasHistory` class represents the timeline of the canvas.
-JDrawpad uses a `CanvasHistory` for its undo-redo functionality.
+This class defines event handlers for some UI elements.
 
 #### Class: `DrawingHelper`
 
@@ -70,17 +68,31 @@ This class defines the event-handler objects that are triggered when user intera
 
 #### Class: `CsvGenerator`
 
+This class defines methods that produce a comma-separated representation from a shape object to be written to the JDP file (a CSV format).
+
 ![diagram of CsvGenerator](CsvGenerator.png)
 
 #### Class: `SvgGenerator`
 
 ![diagram of SvgGenerator](SvgGenerator.png)
 
+This class defines methods that produce SVG code from a shape.
+
 #### Class: `CsvParser`
 
 ![diagram of CsvParser](CsvParser.png)
 
+This class defines methods that produce shape objects from a each line from the JDP file (CSV format).
+
 #### Class: `FileUtils`
+
+This class defines the utility methods for reading and writing files.
 
 ![diagram of FileUtils](FileUtils.png)
 
+#### Class: `CanvasHistory`
+
+![diagram of CanvasHistory](CanvasHistory.png)
+
+The `CanvasHistory` class represents the timeline of the canvas.
+JDrawpad uses a `CanvasHistory` for its undo-redo functionality.
