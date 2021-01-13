@@ -51,7 +51,7 @@ The `ToggleGroup` for our toolbar buttons is the field `toolbarGroup`.
 
 #### Class: `UIHandlers`
 
-![diagram of UIHandlers](DrawingHandlers.png)
+![diagram of UIHandlers](UIHandlers.png)
 
 This class defines event handlers for some UI elements.
 

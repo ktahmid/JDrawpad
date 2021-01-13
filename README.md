@@ -4,7 +4,7 @@
 
 JDrawpad is an application for drawing vector graphics, created using JavaFX.
 
-See [this report](report/report.md) for the program’s technical details.
+See [this report](report/report.md) for a detailed overview of the program’s internals.
 
 ### How to run it
 
