@@ -28,7 +28,7 @@ Helper classes:
   - `CsvParser`
   - `SvgGenerator`
 
-Relationship between the top-level classes:
+**Relationships between the top-level classes**
 
 ![relationship between the classes](class-relationships.png)
 
@@ -55,17 +55,17 @@ The `ToggleGroup` for our toolbar buttons is the field `toolbarGroup`.
 
 This class defines event handlers for some UI elements.
 
-#### Class: `DrawingHelper`
-
-![diagram of DrawingHelper](DrawingHelper.png)
-
-This class defines functions that perform the actual drawing commands as well as the related (inner) classes.
-
 #### Class: `DrawingHandlers`
 
 ![diagram of DrawingHandlers](DrawingHandlers.png)
 
 This class defines the event-handler objects that are triggered when user interacts with the canvas using a pointing device while a tool is selected.
+
+#### Class: `DrawingHelper`
+
+![diagram of DrawingHelper](DrawingHelper.png)
+
+This class defines functions that perform the actual drawing commands as well as the related (inner) classes.
 
 #### Class: `CsvGenerator`
 
